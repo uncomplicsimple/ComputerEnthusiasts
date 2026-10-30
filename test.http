@@ -1,0 +1,38 @@
+###注册用户
+POST http://localhost:8080/user/register
+Content-Type: application/json
+
+{
+  "username": "zhangsan",
+  "password": "123456",
+  "nickname": "张三"
+}
+
+###登录
+POST http://localhost:8080/user/login
+Content-Type: application/json
+
+{
+  "username": "zhangsan",
+  "password": "123456"
+}
+
+###测试拦截器
+GET http://localhost:8080/user/abc
+
+###发布商品
+POST http://localhost:8080/product/publish
+Content-Type: application/json
+
+{
+  "title": "99新 RTX 3060 显卡",
+  "description": "自用一年，无矿无修，箱说全",
+  "price": 1500.00,
+  "category": "显卡"
+}
+
+###获取商品列表
+GET http://localhost:8080/product/list?page=1&size=5
+
+### 管理员-封禁用户
+POST http://localhost:8080/admin/user/toggle/3

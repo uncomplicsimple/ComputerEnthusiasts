@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>我的订单</title>
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container"><a class="navbar-brand" href="/">ComputerEnthusiasts</a></div>
+</nav>
+<div class="container mt-5">
+  <h2>我的订单</h2>
+  <table class="table table-hover bg-white mt-3 shadow-sm">
+    <thead class="table-dark">
+    <tr><th>订单号</th><th>总金额</th><th>状态</th><th>时间</th></tr>
+    </thead>
+    <tbody>
+    <tr th:each="o : ${orders}">
+      <td th:text="${o.orderNo}"></td>
+      <td class="text-danger">￥<span th:text="${o.totalPrice}"></span></td>
+      <td><span class="badge bg-success" th:text="${o.status == 1 ? '已支付' : '待支付'}"></span></td>
+      <td th:text="${#temporals.format(o.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

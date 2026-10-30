@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>注册 - ComputerEnthusiasts</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <div class="row justify-content-center-center">
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header bg-dark text-white text-center"><h4>用户注册</h4></div>
+                <div class="card-body">
+                    <!-- 提示错误信息 -->
+                    <div class="alert alert-danger" th:if="${errorMsg}" th:text="${errorMsg}"></div>
+
+                    <form action="/user/register-html" method="post">
+                        <div class="md-3">
+                            <label class="form-label">用户名</label>
+                            <input type="text" class="form-control" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">密码</label>
+                            <input type="password" class="form-control" name="password" required>
+                        </div>
+                        <div class="md-3">
+                            <label class="form-label">昵称</label>
+                            <input type="test" class="form-control" name="nickname" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">注册</button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <a href="/user/login-page">已有账号？去登录</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

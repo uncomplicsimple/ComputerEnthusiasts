@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>发布新帖 - ComputerEnthusiasts</title>
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container"><a class="navbar-brand" href="/">ComputerEnthusiasts</a></div>
+</nav>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow">
+        <div class="card-header bg-white"><h4>发布新帖</h4></div>
+        <div class="card-body">
+          <form action="/post/publish" method="post">
+            <div class="mb-3">
+              <label class="form-label">帖子标题</label>
+              <input type="text" class="form-control" name="title" required placeholder="例如：新手求推荐 5000 元内的配置">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">正文内容</label>
+              <textarea class="form-control" name="content" rows="8" required placeholder="支持纯文本..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">发布</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

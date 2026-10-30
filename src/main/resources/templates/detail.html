@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${product.title}+' - ComputerEnthusiasts'">商品详情</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">ComputerEnthusiasts</a>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <div class="row bg-white p-4 shadow-sm rounded">
+        <div class="col-md-6">
+            <img th:src="${product.imageUrl != null ? product.imageUrl : 'https://via.placeholder.com/500x400?text=No+Image'}"
+                 class="img-fluid rounded" style="width: 100%; object-fit: contain;" alt="商品大图">
+        </div>
+
+        <div class="col-md-6 d-flex flex-column">
+            <h2 th:text="${product.title}">商品标题</h2>
+            <p class="text-muted mt-2" th:text="${product.description}">商品描述</p>
+
+            <div class="bg-light p-3 my-3 rounded">
+                <h3 class="text-danger mb-0">￥<span th:text="${product.price}">0.00</span></h3>
+            </div>
+
+            <div class="mt-auto">
+                <button class="btn btn-danger btn-lg w-100 mb-2" onclick="buyNow()">立即购买</button>
+                <button class="btn btn-outline-warning btn-lg w-100" onclick="addToCart()">加入购物车</button>
+                <button class="btn btn-outline-info btn-lg w-100 mt-2" onclick="contactSeller()">联系卖家</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 关键：必须加 th:inline="javascript" -->
+<script th:inline="javascript">
+    // 使用 Thymeleaf 的安全内联语法获取 ID
+    const productId = [[${product.id}]];
+
+    function addToCart(){
+        fetch('/cart/add/' + productId, {
+            method: 'POST'
+        })
+            .then(response => response.json())
+            .then(data => {
+                if(data.code === 200){
+                    alert('加入购物车成功！');
+                }else{
+                    alert(data.msg);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('网络错误，请稍后再试');
+            });
+    }
+
+    function buyNow(){
+        //先加入购物车，然后跳转
+        fetch('/cart/add/'+productId,{method:'POST'})
+            .then(res=>res.json())
+            .then(data=>{
+                //如果添加成功，或者购物车里已经有了，都跳过去
+                if(data.code===200||data.msg==="该商品已经在购物车中"){
+                    window.location.href="/cart/page";
+                }else{
+                    alert(data.msg);
+                }
+            })
+            .catch(()=>alert("网络错误"));
+    }
+    function contactSeller() {
+        alert("私信聊天功能正在开发中，敬请期待！");
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${post.title} + ' - ComputerEnthusiasts'">帖子详情</title>
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="/">ComputerEnthusiasts</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="/post/forum-page">返回论坛</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-5">
+  <div class="bg-white p-5 shadow-sm rounded">
+    <!-- 帖子标题 -->
+    <h1 class="mb-3" th:text="${post.title}">帖子标题</h1>
+
+    <!-- 帖子信息（作者、时间、浏览量） -->
+    <div class="text-muted border-bottom pb-3 mb-4">
+      <span class="me-3">👤 楼主：<span th:text="${author != null ? author.nickname : '未知用户'}">昵称</span></span>
+      <span class="me-3">🕒 <span th:text="${#temporals.format(post.createTime, 'yyyy-MM-dd HH:mm:ss')}"></span></span>
+      <span>👁️ 浏览量：<span th:text="${post.viewCount}">0</span></span>
+
+      <!-- 点赞按钮 -->
+      <button class="btn btn-sm btn-outline-danger ms-3" onclick="toggleLike()">
+        👍 <span id="likeCount" th:text="${post.likeCount}">0</span>
+      </button>
+    </div>
+
+    <!-- 帖子正文 -->
+    <div class="fs-5 lh-lg mb-5" style="white-space: pre-wrap;" th:text="${post.content}">帖子正文内容...</div>
+
+    <!-- 评论区 -->
+    <div class="border-top pt-4 mt-5">
+      <h4>评论区 (<span th:text="${#lists.size(comments)}">0</span>)</h4>
+
+      <!-- 评论列表 -->
+      <div class="mt-4 mb-5">
+        <div class="border-bottom pb-3 mb-3" th:each="c : ${comments}">
+          <div class="d-flex justify-content-between">
+            <strong class="text-primary" th:text="${c.nickname}">用户</strong>
+            <small class="text-muted" th:text="${#temporals.format(c.createTime, 'yyyy-MM-dd HH:mm')}">时间</small>
+          </div>
+          <p class="mt-2 mb-0" th:text="${c.content}">评论内容</p>
+        </div>
+        <!-- 如果没评论 -->
+        <div class="text-center text-muted" th:if="${#lists.isEmpty(comments)}">
+          还没有评论，快来抢沙发！
+        </div>
+      </div>
+
+      <!-- 发表评论 -->
+      <div class="bg-light p-3 rounded">
+        <div class="mb-3">
+          <textarea class="form-control" id="commentContent" rows="3" placeholder="写下你的评论..."></textarea>
+        </div>
+        <button class="btn btn-primary" onclick="submitComment()">发表评论</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script th:inline="javascript">
+  const postId = [[${post.id}]];
+
+  function submitComment() {
+    const content = document.getElementById("commentContent").value;
+    if (!content.trim()) {
+      alert("评论内容不能为空");
+      return;
+    }
+
+    fetch('/comment/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ postId: postId, content: content })
+    })
+            .then(res => res.json())
+            .then(data => {
+              if (data.code === 200) {
+                location.reload(); // 刷新页面，看最新评论
+              } else {
+                alert(data.msg); // 没登录会提示
+              }
+            })
+            .catch(() => alert("网络错误"));
+  }
+
+  function toggleLike() {
+    fetch('/post/like/' + postId, { method: 'POST' })
+            .then(res => res.json())
+            .then(data => {
+              if (data.code === 200) {
+                // 刷新页面以显示最新的点赞数
+                location.reload();
+              } else {
+                alert(data.msg); // 没登录会提示
+              }
+            })
+            .catch(() => alert("网络错误"));
+  }
+</script>
+
+</body>
+</html>

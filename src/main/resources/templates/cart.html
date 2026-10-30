@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>我的购物车 - ComputerEnthusiasts</title>
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="/">ComputerEnthusiasts</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item" th:if="${session.loginUser != null}">
+          <span class="nav-link text-light">欢迎，<span th:text="${session.loginUser.nickname}"></span></span>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-warning" href="/cart/page">我的购物车</a>
+        </li>
+        <li class="nav-item" th:if="${session.loginUser != null}">
+          <a class="nav-link text-danger" href="/user/logout">退出登录</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-5">
+  <h2 class="mb-4">我的购物车</h2>
+
+  <table class="table table-hover bg-white shadow-sm rounded">
+    <thead class="table-dark">
+    <tr>
+      <th>图片</th>
+      <th>商品信息</th>
+      <th>单价</th>
+      <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- 循环遍历购物车商品 -->
+    <tr th:each="item : ${cartItems}">
+      <td>
+        <img th:src="${item.imageUrl != null ? item.imageUrl : 'https://via.placeholder.com/100?text=No'}"
+             style="width: 80px; height: 80px; object-fit: cover;" class="rounded">
+      </td>
+      <td>
+        <h5 th:text="${item.title}">商品标题</h5>
+        <small class="text-muted" th:text="${item.description}">描述</small>
+      </td>
+      <td class="text-danger align-middle">
+        ￥<span th:text="${item.price}">0.00</span>
+      </td>
+      <td class="align-middle">
+        <!-- 这里留一个删除按钮，我们下一轮实现 -->
+        <button class="btn btn-sm btn-outline-danger" th:onclick="'deleteItem(' + ${item.cartId} + ')'">删除</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- 如果购物车为空 -->
+  <div class="text-center text-muted mt-5" th:if="${#lists.isEmpty(cartItems)}">
+    购物车空空如也，快去选购吧！
+  </div>
+
+  <!-- 结算区域 -->
+  <div class="d-flex justify-content-end mt-4" th:if="${!#lists.isEmpty(cartItems)}">
+    <button class="btn btn-danger btn-lg px-5" onclick="checkout()">去结算</button>
+  </div>
+  <script>
+    function checkout() {
+      if(!confirm('确认要结算吗？')) return;
+
+      fetch('/order/create',{method:'POST'})
+              .then(res=>res.json())
+              .then(data=>{
+                if(data.code===200){
+                  alert(data.data); // 弹出订单号
+                  location.reload(); // 刷新页面
+                }else{
+                  alert(data.msg);
+                }
+              })
+              .catch(()=>alert("网络错误"));
+              }
+  </script>
+
+</div>
+<script>
+  function deleteItem(cartId) {
+    if(!confirm('确认要删除吗？')) return;
+    fetch('/cart/delete/'+cartId,{
+      method:'DELETE'
+    })
+            .then(res=>res.json())
+            .then(data=>{
+              if(data.code===200){
+                location.reload();//删除成功，刷新页面
+              }else{
+                alert(data.msg);
+              }
+            })
+            .catch(()=>alert("网络错误"))
+  }
+</script>
+
+
+</body>
+</html>

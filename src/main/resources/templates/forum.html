@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>装机交流论坛 - ComputerEnthusiasts</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">ComputerEnthusiasts</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="/">返回商城</a></li>
+                <li class="nav-item"><a class="nav-link text-warning" href="/post/publish-page">发帖</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h2 class="mb-4">装机交流论坛</h2>
+
+    <div class="list-group shadow-sm">
+        <a th:each="post : ${posts}" th:href="@{'/post/detail/' + ${post.id}}" class="list-group-item list-group-item-action p-3">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1 text-primary" th:text="${post.title}">帖子标题</h5>
+                <small class="text-muted" th:text="${#temporals.format(post.createTime, 'yyyy-MM-dd HH:mm')}">时间</small>
+            </div>
+            <p class="mb-1 text-truncate" style="max-width: 80%;" th:text="${post.content}">帖子内容...</p>
+            <small class="text-muted">
+                👁️ <span th:text="${post.viewCount}">0</span>
+                👍 <span th:text="${post.likeCount}">0</span>
+            </small>
+        </a>
+    </div>
+
+    <!-- 没帖子的提示 -->
+    <div class="text-center text-muted mt-5" th:if="${#lists.isEmpty(posts)}">
+        还没有人发帖，快来抢占一楼吧！
+    </div>
+</div>
+</body>
+</html>
